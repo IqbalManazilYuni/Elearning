@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import {
+  Alert,
   Animated,
+  BackHandler,
   Dimensions,
   StatusBar,
   StyleSheet,
@@ -10,6 +12,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CaretRight, LogoWelcome, Seperator } from '../../assets/images';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+import { RootStackParamList } from '../../navigator/AppNavigator';
 
 const { height } = Dimensions.get('window');
 
@@ -17,7 +25,7 @@ export const WelcomeScreen: React.FC = () => {
   // State animasi untuk fade dan slide
   const fadeAnim = useRef(new Animated.Value(0)).current; // Untuk animasi fade
   const slideAnim = useRef(new Animated.Value(height)).current; // Untuk animasi slide (untuk elemen yang masuk dari bawah)
-
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   // Gunakan useEffect untuk memulai animasi ketika komponen pertama kali dimuat
   useEffect(() => {
     // Start animasi setelah komponen dimuat
@@ -34,6 +42,32 @@ export const WelcomeScreen: React.FC = () => {
       }),
     ]).start();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const backAction = () => {
+        Alert.alert('Hold on!', 'Are you sure you want to exit the app?', [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          { text: 'YES', onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction
+      );
+
+      return () => backHandler.remove(); // Clean up event listener when screen is unfocused
+    }, [])
+  );
+  const handleNavigationGuru = () => {
+    navigation.navigate('Login');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -107,7 +141,10 @@ export const WelcomeScreen: React.FC = () => {
         </View>
         <View style={styles.childContent3}>
           <View style={styles.row1}>
-            <TouchableOpacity style={styles.button1}>
+            <TouchableOpacity
+              style={styles.button1}
+              onPress={() => handleNavigationGuru()}
+            >
               <Text
                 style={{
                   fontFamily: 'roboto',
