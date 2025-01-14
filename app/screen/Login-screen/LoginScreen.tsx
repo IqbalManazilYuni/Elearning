@@ -12,17 +12,23 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LogoWelcome } from '../../assets/images';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigator/AppNavigator';
 
 const { height } = Dimensions.get('window');
 
 export const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   // Animated Values for FadeIn and Slide-In
   const fadeAnim = useRef(new Animated.Value(0)).current; // Untuk opacity
   const translateYAnim = useRef(new Animated.Value(50)).current; // Untuk translasi Y
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handleNavigationHome = () => {
+    navigation.navigate('Home');
+  };
 
   useEffect(() => {
     // Trigger the fade-in and slide-in animation when the component mounts
@@ -59,7 +65,7 @@ export const LoginScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: height * 0.06,
-                fontFamily: 'roboto',
+                fontFamily: 'lexend',
                 fontWeight: 'bold',
                 color: '#363267',
               }}
@@ -72,7 +78,7 @@ export const LoginScreen: React.FC = () => {
               <Text
                 style={{
                   marginBottom: 10,
-                  fontFamily: 'roboto',
+                  fontFamily: 'lexend',
                   fontSize: height * 0.022,
                   color: '#0074CE',
                   fontWeight: 700,
@@ -90,7 +96,7 @@ export const LoginScreen: React.FC = () => {
               <Text
                 style={{
                   marginBottom: 10,
-                  fontFamily: 'roboto',
+                  fontFamily: 'lexend',
                   fontSize: height * 0.022,
                   color: '#0074CE',
                   fontWeight: 700,
@@ -99,32 +105,14 @@ export const LoginScreen: React.FC = () => {
               >
                 Password Pengguna
               </Text>
-              <View
-                style={{
-                  borderWidth: 1,
-                  height: 50,
-                  paddingHorizontal: 16,
-                  borderColor: '#0074CE',
-                  width: '100%',
-                  flexDirection: 'row',
-                  borderRadius: 48,
-                }}
-              >
-                <TextInput
-                  style={styles.inputanPassword}
-                  placeholder="Masukkan Password Pengguna"
-                  placeholderTextColor={'black'}
-                  value={password}
-                  secureTextEntry={!showPassword}
-                  onChangeText={setPassword}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeIcon}
-                >
-                  <Text>{showPassword ? '🙈' : '👁️'}</Text>
-                </TouchableOpacity>
-              </View>
+              <TextInput
+                style={styles.inputanPassword}
+                placeholder="Masukkan Password Pengguna"
+                placeholderTextColor={'black'}
+                value={password}
+                secureTextEntry={true}
+                onChangeText={setPassword}
+              />
             </View>
             <View style={styles.childContent3}>
               <TouchableOpacity
@@ -136,11 +124,14 @@ export const LoginScreen: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
+                onPress={() => {
+                  handleNavigationHome();
+                }}
               >
                 <Text
                   style={{
                     color: 'white',
-                    fontFamily: 'roboto',
+                    fontFamily: 'lexend',
                     fontSize: height * 0.024,
                     fontWeight: 'bold',
                   }}
@@ -195,16 +186,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 50,
     paddingHorizontal: 16,
-    fontFamily: 'roboto',
+    fontFamily: 'lexend',
     color: 'black',
     fontWeight: '300',
     borderColor: '#0074CE',
     borderRadius: 48,
   },
   inputanPassword: {
-    fontFamily: 'roboto',
+    fontFamily: 'lexend',
     color: 'black',
     fontWeight: '300',
+    borderWidth: 1,
+    height: 50,
+    paddingHorizontal: 16,
+    borderColor: '#0074CE',
+    width: '100%',
+    flexDirection: 'row',
+    borderRadius: 48,
   },
   eyeIcon: {
     position: 'absolute',

@@ -30,7 +30,7 @@ export const SplashScreen: React.FC = () => {
         <Text
           style={{
             fontSize: height * 0.06,
-            fontFamily: 'roboto',
+            fontFamily: 'lexend',
             fontWeight: 'bold',
             color: '#FFFFFF',
           }}
@@ -42,7 +42,7 @@ export const SplashScreen: React.FC = () => {
         <Text
           style={{
             fontSize: height * 0.023,
-            fontFamily: 'roboto',
+            fontFamily: 'lexend',
             fontWeight: 'bold',
             color: '#FFFFFF',
           }}

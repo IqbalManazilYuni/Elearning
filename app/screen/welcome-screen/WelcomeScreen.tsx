@@ -69,6 +69,10 @@ export const WelcomeScreen: React.FC = () => {
     navigation.navigate('Login');
   };
 
+  const handleNavigationSiswa = () =>{
+    navigation.navigate('Home')
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#FFFFFF'} barStyle="dark-content" />
@@ -79,7 +83,7 @@ export const WelcomeScreen: React.FC = () => {
           <Text
             style={{
               fontSize: height * 0.06,
-              fontFamily: 'roboto',
+              fontFamily: 'lexend',
               fontWeight: 'bold',
               color: '#363267',
             }}
@@ -106,7 +110,7 @@ export const WelcomeScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: height * 0.04,
-                fontFamily: 'roboto',
+                fontFamily: 'lexend',
                 fontWeight: 'bold',
                 color: '#FFFFFF',
                 textAlign: 'center',
@@ -128,7 +132,7 @@ export const WelcomeScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: height * 0.026,
-                fontFamily: 'roboto',
+                fontFamily: 'lexend',
                 color: '#FFFFFF',
                 textAlign: 'center',
                 paddingHorizontal: 10,
@@ -147,7 +151,7 @@ export const WelcomeScreen: React.FC = () => {
             >
               <Text
                 style={{
-                  fontFamily: 'roboto',
+                  fontFamily: 'lexend',
                   fontSize: height * 0.028,
                   color: '#3DB2FF',
                   fontWeight: 'bold',
@@ -159,10 +163,10 @@ export const WelcomeScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.row2}>
-            <TouchableOpacity style={styles.button2}>
+            <TouchableOpacity style={styles.button2} onPress={()=>handleNavigationSiswa()}>
               <Text
                 style={{
-                  fontFamily: 'roboto',
+                  fontFamily: 'lexend',
                   fontSize: height * 0.028,
                   color: '#3DB2FF',
                   fontWeight: 'bold',
