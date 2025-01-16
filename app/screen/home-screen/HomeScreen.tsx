@@ -13,13 +13,53 @@ import {
   IconGlora,
   IconGoals,
   IconHome,
+  IconPetunjuk,
   Seperator,
   Seperator2,
 } from '../../assets/images';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigator/AppNavigator';
 
 const { height } = Dimensions.get('window');
 
+const items = [
+  {
+    title: 'Glosarium',
+    description: 'Istilah Asam Basa',
+    icon: <IconGlora />,
+    pdf: 'Glosarium.pdf',
+  },
+  {
+    title: 'Capaian',
+    description: 'Pencapaian Pembelajaran',
+    icon: <IconGoals />,
+    pdf: 'Capaian.pdf',
+  },
+  {
+    title: 'Profile',
+    description: 'Profile Pengembang',
+    icon: <IconExam />,
+    pdf: 'ProfilPengembang.pdf',
+  },
+  {
+    title: 'Petunjuk',
+    description: 'Petunjuk Pengguna',
+    icon: <IconPetunjuk />,
+    pdf: 'Petunjukmodul.pdf',
+  },
+];
+
 export const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handlePreviewNavigasi = (item: string, pdf: string) => {
+    navigation.navigate('Preview', {
+      state: {
+        item: item,
+        pdf: pdf,
+      },
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3DB2FF'} barStyle="light-content" />
@@ -78,91 +118,33 @@ export const HomeScreen: React.FC = () => {
         <View style={styles.childContent2}>
           <ScrollView
             horizontal={true}
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
             style={{ margin: 10 }}
           >
             <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity style={styles.box}>
-                <View style={styles.boxChild1}>
-                  <Text
-                    style={{
-                      fontFamily: 'lexend',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      fontSize: height * 0.03,
-                    }}
-                  >
-                    Glosarium
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'lexend',
-                      color: 'white',
-                      fontSize: height * 0.016,
-                    }}
-                  >
-                    Istilah Asam Basa
-                  </Text>
-                </View>
-                <View style={styles.boxChild2}>
-                  <IconGlora />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.box}>
-                <View style={styles.boxChild1}>
-                  <Text
-                    style={{
-                      fontFamily: 'lexend',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      fontSize: height * 0.03,
-                    }}
-                  >
-                    Capaian
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'lexend',
-                      color: 'white',
-                      fontSize: height * 0.016,
-                    }}
-                  >
-                    Pencapaian Pembelajaran
-                  </Text>
-                </View>
-                <View style={styles.boxChild2}>
-                  <IconGoals />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.box}>
-                <View style={styles.boxChild1}>
-                  <Text
-                    style={{
-                      fontFamily: 'lexend',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      fontSize: height * 0.03,
-                    }}
-                  >
-                    Evaluasi
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'lexend',
-                      color: 'white',
-                      fontSize: height * 0.016,
-                    }}
-                  >
-                    Evaluasi Pembelajaran
-                  </Text>
-                </View>
-                <View style={styles.boxChild2}>
-                  <IconExam />
-                </View>
-              </TouchableOpacity>
+              {items.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.box}
+                  onPress={() => handlePreviewNavigasi(item.title, item.pdf)}
+                >
+                  <View style={styles.boxChild1}>
+                    <View style={styles.textContainer}>
+                      <Text style={styles.boxTitle}>{item.title}</Text>
+                    </View>
+                    <View style={styles.textDescriptionContainer}>
+                      <Text style={styles.boxDescription}>
+                        {item.description}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.boxChild2}>{item.icon}</View>
+                </TouchableOpacity>
+              ))}
             </View>
           </ScrollView>
         </View>
+        <View></View>
       </View>
     </SafeAreaView>
   );
@@ -205,9 +187,33 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'column',
   },
   boxChild2: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  textContainer: {
+    height: '50%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textDescriptionContainer: {
+    height: '50%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  boxTitle: {
+    fontFamily: 'lexend',
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: height * 0.03,
+  },
+  boxDescription: {
+    fontFamily: 'lexend',
+    color: 'white',
+    fontSize: height * 0.016,
   },
 });
