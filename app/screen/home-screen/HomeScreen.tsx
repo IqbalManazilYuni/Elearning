@@ -9,13 +9,18 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  IconExam,
+  IconCapaian,
+  IconPengembang,
   IconGlora,
-  IconGoals,
   IconHome,
   IconPetunjuk,
   Seperator,
   Seperator2,
+  IconKataPengantar,
+  IconMateri,
+  IconExam,
+  IconDaftarPustaka,
+  IconPetaKonsep,
 } from '../../assets/images';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/AppNavigator';
@@ -24,42 +29,95 @@ const { height } = Dimensions.get('window');
 
 const items = [
   {
+    title: 'Kata Pengantar',
+    icon: <IconKataPengantar />,
+    pdf: 'KataPengantar.pdf',
+  },
+  {
+    title: 'Capaian',
+    icon: <IconCapaian />,
+    pdf: 'Capaian.pdf',
+  },
+  {
+    title: 'Petunjuk',
+    icon: <IconPetunjuk />,
+    pdf: 'Petunjukmodul.pdf',
+  },
+  {
+    title: 'Materi 1',
+    code: 'materi1',
+    icon: <IconMateri />,
+  },
+  {
+    title: 'Materi 2',
+    code: 'materi2',
+    icon: <IconMateri />,
+  },
+  {
+    title: 'Materi 3',
+    code: 'materi3',
+    icon: <IconMateri />,
+  },
+  {
+    title: 'Evaluasi',
+    eval: 'Evaluasi',
+    icon: <IconExam />,
+  },
+  {
     title: 'Glosarium',
-    description: 'Istilah Asam Basa',
     icon: <IconGlora />,
     pdf: 'Glosarium.pdf',
   },
   {
-    title: 'Capaian',
-    description: 'Pencapaian Pembelajaran',
-    icon: <IconGoals />,
-    pdf: 'Capaian.pdf',
+    title: 'Daftar Pustaka',
+    icon: <IconDaftarPustaka />,
+    pdf: 'DaftarPustaka.pdf',
+  },
+  {
+    title: 'Peta Konsep',
+    icon: <IconPetaKonsep />,
+    pdf: 'PetaKonsep.pdf',
   },
   {
     title: 'Profile',
-    description: 'Profile Pengembang',
-    icon: <IconExam />,
+    icon: <IconPengembang />,
     pdf: 'ProfilPengembang.pdf',
-  },
-  {
-    title: 'Petunjuk',
-    description: 'Petunjuk Pengguna',
-    icon: <IconPetunjuk />,
-    pdf: 'Petunjukmodul.pdf',
   },
 ];
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const handlePreviewNavigasi = (item: string, pdf: string) => {
-    navigation.navigate('Preview', {
-      state: {
-        item: item,
-        pdf: pdf,
-      },
-    });
+  const handlePreviewNavigasi = (
+    item: string,
+    pdf: string,
+    code?: string,
+    evaluation?: string
+  ) => {
+    if (code) {
+      navigation.navigate('Materi', {
+        state: {
+          item: item,
+          code: code,
+        },
+      });
+    } else if (evaluation) {
+      navigation.navigate('Evaluasi', {
+        state: {
+          item: item,
+          evaluation: evaluation,
+        },
+      });
+    } else {
+      navigation.navigate('Preview', {
+        state: {
+          item: item,
+          pdf: pdf,
+        },
+      });
+    }
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3DB2FF'} barStyle="light-content" />
@@ -115,35 +173,40 @@ export const HomeScreen: React.FC = () => {
         <View style={styles.childContent1}>
           <Seperator2 />
         </View>
-        <View style={styles.childContent2}>
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{ margin: 10 }}
+        <View style={{ margin: 10 }}>
+          <Text
+            style={{
+              fontFamily: 'lexend',
+              fontWeight: 'black',
+              fontSize: height * 0.024,
+            }}
           >
-            <View style={{ flexDirection: 'row' }}>
-              {items.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.box}
-                  onPress={() => handlePreviewNavigasi(item.title, item.pdf)}
-                >
-                  <View style={styles.boxChild1}>
-                    <View style={styles.textContainer}>
-                      <Text style={styles.boxTitle}>{item.title}</Text>
-                    </View>
-                    <View style={styles.textDescriptionContainer}>
-                      <Text style={styles.boxDescription}>
-                        {item.description}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.boxChild2}>{item.icon}</View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+            {' '}
+            Menu Aplikasi{' '}
+          </Text>
         </View>
+        <ScrollView
+          style={styles.childContent2}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.containerMenu}>
+            {items.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.box}
+                onPress={() =>
+                  handlePreviewNavigasi(item.title, item.pdf, item.code, item.eval)
+                }
+              >
+                {item.icon}
+                <Text style={{ fontFamily: 'lexend', textAlign: 'center' }}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
         <View></View>
       </View>
     </SafeAreaView>
@@ -171,16 +234,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   childContent2: {
-    height: '25%',
-    width: '100%',
+    flex: 1, // Agar ScrollView menggunakan ruang yang tersedia
+    marginHorizontal: 10,
+  },
+  scrollContent: {
+    flexGrow: 1, // Agar konten ScrollView dapat digulir
+    paddingBottom: 20, // Memberikan ruang di bawah konten
+  },
+  containerMenu: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   box: {
-    width: height * 0.25,
-    height: height * 0.12,
-    backgroundColor: '#27AE60',
-    borderRadius: 16,
-    marginHorizontal: 5,
-    flexDirection: 'row',
+    width: 110,
+    height: 110,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    borderWidth: 0.5,
+    marginBottom: 20,
+    padding: 10,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
   },
   boxChild1: {
     width: '70%',

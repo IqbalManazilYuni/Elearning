@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855515897855",
+    "project_id": "recruitlabdsi-8cad3",
+    "storage_bucket": "recruitlabdsi-8cad3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855515897855:android:92ee4d7efb11a1f49f91ca",
+        "android_client_info": {
+          "package_name": "com.elearning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdlmxon_nZ2jsC1gTHF9Yd5RdWgbghiZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
