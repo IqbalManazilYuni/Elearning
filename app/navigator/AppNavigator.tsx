@@ -8,6 +8,8 @@ import { PreviewScreen } from '../screen/preview-pdf-1-screen/PreviewScreen';
 import { MateriScreen } from '../screen/materi-screen/MateriScreen';
 import { SplashScreen } from '../screen/splash-screen/SplashScreen';
 import { EvaluasiScreen } from '../screen/evaluasi-screen/EvaluasiScreen';
+import { LembarScreen } from '../screen/lembar-ref-screen/LembarScreen';
+import { PembelajaranScreen } from '../screen/pembelajaraan-screen/PembelajaranScreen';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -33,6 +35,16 @@ export type RootStackParamList = {
     };
   };
   Splash2: undefined;
+  Lembar: {
+    state: {
+      jenis: string;
+    };
+  };
+  Pembelajaran: {
+    state: {
+      jenis: string;
+    };
+  };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -51,6 +63,8 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name="Preview" component={PreviewScreen} />
       <Stack.Screen name="Materi" component={MateriScreen} />
       <Stack.Screen name="Evaluasi" component={EvaluasiScreen} />
+      <Stack.Screen name="Lembar" component={LembarScreen} />
+      <Stack.Screen name="Pembelajaran" component={PembelajaranScreen} />
     </Stack.Navigator>
   );
 };

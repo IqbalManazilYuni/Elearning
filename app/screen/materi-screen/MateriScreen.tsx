@@ -9,7 +9,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '../../components/header/Hearder';
-import { IconBackLeft, IconLatihan, IconMateri2, IconRefleksi, IconRight } from '../../assets/images';
+import {
+  IconBackLeft,
+  IconLatihan,
+  IconMateri2,
+  IconRefleksi,
+  IconRight,
+} from '../../assets/images';
 import {
   NavigationProp,
   RouteProp,
@@ -26,6 +32,21 @@ export const MateriScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<MateriScreenRouteProp>();
   const { item, code } = route.params.state;
+  const handleNavigasiLembarRefleksi = (jenis: string) => {
+    navigation.navigate('Lembar', {
+      state: {
+        jenis: jenis,
+      },
+    });
+  };
+
+  const handleNavigasiPembelajaran = (jenis: string) => {
+    navigation.navigate('Pembelajaran', {
+      state: {
+        jenis: jenis,
+      },
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,7 +57,10 @@ export const MateriScreen: React.FC = () => {
         onBackPress={() => navigation.goBack()}
       />
       <View style={styles.containerContent}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => handleNavigasiPembelajaran(item)}
+        >
           <View
             style={{
               justifyContent: 'center',
@@ -64,7 +88,10 @@ export const MateriScreen: React.FC = () => {
             <IconLatihan />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => handleNavigasiLembarRefleksi(item)}
+        >
           <View
             style={{
               justifyContent: 'center',
