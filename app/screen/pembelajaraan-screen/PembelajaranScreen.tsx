@@ -7,6 +7,8 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../../navigator/AppNavigator';
@@ -23,7 +25,10 @@ import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
 import Video from 'react-native-video';
 
-type PembelajaranScreenRouteProp = RouteProp<RootStackParamList, 'Pembelajaran'>;
+type PembelajaranScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'Pembelajaran'
+>;
 
 const { width, height } = Dimensions.get('window');
 
@@ -42,14 +47,58 @@ const dataPembelajaran = [
   },
   {
     id: 3,
-    kategori: 'Video',
-    url: '',
+    kategori: 'Soal',
+    soal: {
+      deskripsi1:
+        'Berdasarkan kegiatan motivasi diperoleh masalah sebagai berikut:',
+      pertanyaan1: [
+        {
+          id: 1,
+          pertanyaan: 'Apa yang dimaksud dengan asam dan basa?',
+        },
+        {
+          id: 2,
+          pertanyaan:
+            'Bagaimana teori asam dan basa menurut Arrhenius, Bronsted-Lowry dan Lewis?',
+        },
+      ],
+      deskripsi2:
+        'Buatlah hipotesis awal untuk permasalahan pada penyampaian masalah!',
+      pertanyaan2: [
+        {
+          id: 3,
+          pertanyaan: 'Asam adalah ?',
+        },
+        {
+          id: 4,
+          pertanyaan: 'Basa adalah ?',
+        },
+        {
+          id: 5,
+          pertanyaan: 'Teori Asam Basa Arrhenius adalah ?',
+        },
+        {
+          id: 6,
+          pertanyaan: 'Teori Asam Basa Bronsted-Lowry adalah ?',
+        },
+        {
+          id: 7,
+          pertanyaan: 'Teori Asam Basa Lewis adalah ?',
+        },
+      ],
+    },
     jenis: 'Materi 1',
   },
   {
     id: 4,
+    kategori: 'pdf',
+    url: 'MateriKedua.pdf',
+    jenis: 'Materi 1',
+  },
+  {
+    id: 5,
     kategori: 'Video',
-    url: '',
+    url: 'VideoAsamBasaArr.mp4',
     jenis: 'Materi 1',
   },
 ];
@@ -64,7 +113,47 @@ export const PembelajaranScreen: React.FC = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0); // State untuk menyimpan indeks data yang sedang ditampilkan
 
-  const downloadFromFirebase = async (storagePath: string | undefined, localFilePath: string) => {
+  const [soalDanJawaban, setSoalDanJawaban] = useState<
+    { type: 'deskripsi' | 'pertanyaan'; content: string; jawaban?: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (dataPembelajaran[currentIndex].kategori === 'Soal') {
+      const soalData = dataPembelajaran[currentIndex].soal;
+      const initialSoalDanJawaban = [
+        { type: 'deskripsi', content: soalData?.deskripsi1 },
+        ...soalData.pertanyaan1.map((soal) => ({
+          type: 'pertanyaan',
+          content: soal.pertanyaan,
+          jawaban: '',
+        })),
+        { type: 'deskripsi', content: soalData?.deskripsi2 },
+        ...soalData.pertanyaan2.map((soal) => ({
+          type: 'pertanyaan',
+          content: soal.pertanyaan,
+          jawaban: '',
+        })),
+      ];
+      setSoalDanJawaban(initialSoalDanJawaban);
+    }
+  }, [currentIndex]);
+
+  const handleJawabanChange = (text: string, index: number) => {
+    const newSoalDanJawaban = [...soalDanJawaban];
+    if (newSoalDanJawaban[index].type === 'pertanyaan') {
+      newSoalDanJawaban[index].jawaban = text;
+    }
+    setSoalDanJawaban(newSoalDanJawaban);
+  };
+
+  const handleSimpanJawaban = () => {
+    console.log(soalDanJawaban);
+  };
+
+  const downloadFromFirebase = async (
+    storagePath: string | undefined,
+    localFilePath: string
+  ) => {
     try {
       const reference = storage().ref(storagePath);
       await reference.writeToFile(localFilePath);
@@ -83,7 +172,10 @@ export const PembelajaranScreen: React.FC = () => {
       const localFileExists = await RNFS.exists(localFile);
       if (!localFileExists) {
         const storagePath = `pdf/${pdf}`;
-        const downloadedFilePath = await downloadFromFirebase(storagePath, localFile);
+        const downloadedFilePath = await downloadFromFirebase(
+          storagePath,
+          localFile
+        );
         if (downloadedFilePath) {
           setFilePath(downloadedFilePath);
           console.log(downloadedFilePath);
@@ -110,7 +202,10 @@ export const PembelajaranScreen: React.FC = () => {
       const localFileExists = await RNFS.exists(localFile);
       if (!localFileExists) {
         const storagePath = `video/${video}`; // Sesuaikan dengan path video di Firebase Storage
-        const downloadedFilePath = await downloadFromFirebase(storagePath, localFile);
+        const downloadedFilePath = await downloadFromFirebase(
+          storagePath,
+          localFile
+        );
         if (downloadedFilePath) {
           setVideoUrl(`file://${downloadedFilePath}`);
           console.log(downloadedFilePath);
@@ -238,6 +333,72 @@ export const PembelajaranScreen: React.FC = () => {
             )}
           </>
         )}
+        {dataPembelajaran[currentIndex].id === 3 && (
+          <ScrollView
+            style={styles.boxSoal}
+            showsVerticalScrollIndicator={false}
+          >
+            {soalDanJawaban.map((item, index) => (
+              <View key={index}>
+                {item.type === 'deskripsi' ? (
+                  <Text style={styles.fontDeskripsi}>{item.content}</Text>
+                ) : (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        width: '100%',
+                        paddingLeft: 10,
+                      }}
+                    >
+                      <View style={{ width: '100%', paddingLeft:10 }}>
+                        <Text style={styles.fontDeskripsi}>{item.content}</Text>
+                      </View>
+                    </View>
+                    <View style={{ width: '100%', alignItems: 'center' }}>
+                      <TextInput
+                        style={styles.inputMultiline}
+                        placeholder="Masukkan Jawaban"
+                        multiline
+                        numberOfLines={4}
+                        textAlignVertical="top"
+                        onChangeText={(text) =>
+                          handleJawabanChange(text, index)
+                        }
+                      />
+                    </View>
+                  </>
+                )}
+              </View>
+            ))}
+
+            {/* Tombol Simpan */}
+            <View style={{ width: '100%', alignItems: 'center', marginBottom:10 }}>
+              <TouchableOpacity
+                style={{
+                  width: '50%',
+                  height: 60,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#3DB2FF',
+                  borderRadius:16,
+                }}
+                onPress={()=>handleSimpanJawaban()}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'lexend',
+                    fontWeight: 'bold',
+                    fontSize: 18,
+                  }}
+                >
+                  Simpan
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        )}
       </View>
       <View
         style={{
@@ -319,5 +480,28 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
     backgroundColor: 'white',
+  },
+  boxSoal: {
+    flex: 1,
+    marginBottom: 20,
+    paddingHorizontal: 16,
+  },
+  fontDeskripsi: {
+    fontFamily: 'lexend',
+    fontSize: height * 0.018,
+    fontWeight: 'black',
+    marginBottom: 10,
+  },
+  inputMultiline: {
+    width: '90%',
+    height: 80, // Default tinggi inputan multiline
+    borderWidth: 1,
+    elevation: 5,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: 'white',
+    textAlignVertical: 'top',
+    marginBottom: 10,
   },
 });

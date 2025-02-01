@@ -48,16 +48,16 @@ const items = [
     code: 'materi1',
     icon: <IconMateri />,
   },
-  {
-    title: 'Materi 2',
-    code: 'materi2',
-    icon: <IconMateri />,
-  },
-  {
-    title: 'Materi 3',
-    code: 'materi3',
-    icon: <IconMateri />,
-  },
+  // {
+  //   title: 'Materi 2',
+  //   code: 'materi2',
+  //   icon: <IconMateri />,
+  // },
+  // {
+  //   title: 'Materi 3',
+  //   code: 'materi3',
+  //   icon: <IconMateri />,
+  // },
   {
     title: 'Evaluasi',
     eval: 'Evaluasi',
