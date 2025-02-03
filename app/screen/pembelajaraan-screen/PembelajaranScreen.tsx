@@ -101,6 +101,12 @@ const dataPembelajaran = [
     url: 'VideoAsamBasaArr.mp4',
     jenis: 'Materi 1',
   },
+  {
+    id: 6,
+    kategori: 'pdf',
+    url: 'soal.pdf',
+    jenis: 'Materi 1',
+  },
 ];
 
 export const PembelajaranScreen: React.FC = () => {
@@ -278,23 +284,57 @@ export const PembelajaranScreen: React.FC = () => {
                   alignItems: 'center',
                 }}
               >
-                {filePath ? (
-                  <PDFReader
-                    source={{ uri: `file://${filePath}`, cache: true }}
-                    onLoadComplete={(numberOfPages, filePath) => {
-                      console.log(`Number of pages: ${numberOfPages}`);
-                    }}
-                    onError={(error) => {
-                      console.log('Error while loading PDF:', error);
-                    }}
-                    onPressLink={(uri) => {
-                      console.log(`Link pressed: ${uri}`);
-                    }}
-                    style={styles.pdf}
-                  />
-                ) : (
-                  <Text>No PDF file found</Text>
-                )}
+                <>
+                  {filePath ? (
+                    <PDFReader
+                      source={{ uri: `file://${filePath}`, cache: true }}
+                      onLoadComplete={(numberOfPages, filePath) => {
+                        console.log(`Number of pages: ${numberOfPages}`);
+                      }}
+                      onError={(error) => {
+                        console.log('Error while loading PDF:', error);
+                      }}
+                      onPressLink={(uri) => {
+                        console.log(`Link pressed: ${uri}`);
+                      }}
+                      style={styles.pdf}
+                    />
+                  ) : (
+                    <Text>No PDF file found</Text>
+                  )}
+                  {dataPembelajaran[currentIndex].id === 6 && (
+                    <View
+                      style={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: height * 0.02,
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={{
+                          height: 60,
+                          width: '60%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: '#3DB2FF',
+                          borderRadius: 16,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontFamily: 'lexend',
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                          }}
+                        >
+                          Upload Jawaban
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </>
               </View>
             )}
           </>
@@ -351,7 +391,7 @@ export const PembelajaranScreen: React.FC = () => {
                         paddingLeft: 10,
                       }}
                     >
-                      <View style={{ width: '100%', paddingLeft:10 }}>
+                      <View style={{ width: '100%', paddingLeft: 10 }}>
                         <Text style={styles.fontDeskripsi}>{item.content}</Text>
                       </View>
                     </View>
@@ -373,7 +413,9 @@ export const PembelajaranScreen: React.FC = () => {
             ))}
 
             {/* Tombol Simpan */}
-            <View style={{ width: '100%', alignItems: 'center', marginBottom:10 }}>
+            <View
+              style={{ width: '100%', alignItems: 'center', marginBottom: 10 }}
+            >
               <TouchableOpacity
                 style={{
                   width: '50%',
@@ -381,9 +423,9 @@ export const PembelajaranScreen: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: '#3DB2FF',
-                  borderRadius:16,
+                  borderRadius: 16,
                 }}
-                onPress={()=>handleSimpanJawaban()}
+                onPress={() => handleSimpanJawaban()}
               >
                 <Text
                   style={{
