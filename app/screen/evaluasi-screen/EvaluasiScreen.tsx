@@ -63,16 +63,10 @@ export const EvaluasiScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<EvaluasiScreenRouteProp>();
   const { item, evaluation } = route.params.state;
-  const [nama, setNama] = useState('');
-  const [nisn, setNisn] = useState('');
-  const [statusData, setStatusData] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [statusUjian, setStatusUjian] = useState(false);
   const handleSelection = (option: string) => {
     setSelectedOption(option);
-  };
-  const handleNavigationUjian = () => {
-    setStatusData(true);
   };
   const handleUjian = () => {
     setStatusUjian(true);
@@ -82,243 +76,189 @@ export const EvaluasiScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={'#3DB2FF'} barStyle="light-content" />
 
-      {statusData === false ? (
-        <>
-          <Header
-            TxtMiddle={item}
-            ImgBack={() => <IconBackLeft />}
-            onBackPress={() => navigation.goBack()}
-          />
-          <ScrollView style={styles.welcomeExam}>
-            <View style={styles.styleIcon}>
-              <IconEvaluasi />
+      <>
+        {statusUjian === false ? (
+          <View style={styles.petunjukUjian}>
+            <View style={styles.styleTitle}>
+              <Text style={styles.fontTitle}>Petunjuk Ujian Evaluasi</Text>
             </View>
-            <View style={styles.formInput}>
-              <View style={styles.styleTitle}>
-                <Text style={styles.fontTitle}>Ujian Evaluasi</Text>
-              </View>
-              <View style={styles.boxForm}>
-                <Text style={styles.labelNama}>Inputkan NISN</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Masukkan NISN"
-                  placeholderTextColor={'black'}
-                  value={nisn}
-                  onChangeText={setNisn}
-                />
-                <Text style={[styles.labelNama, { marginTop: height * 0.016 }]}>
-                  Inputkan Nama Siswa
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Masukkan Nama Siswa"
-                  placeholderTextColor={'black'}
-                  value={nama}
-                  onChangeText={setNama}
-                />
-              </View>
-              <View style={styles.childContent3}>
+            <View style={styles.row}>
+              <Text style={styles.number}>1.</Text>
+              <Text style={styles.text}>
+                Berdoalah terlebih dahulu sebelum mengerjakan soal.
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.number}>2.</Text>
+              <Text style={styles.text}>
+                Periksa dan bacalah soal-soal dengan teliti sebelum menjawab.
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.number}>3.</Text>
+              <Text style={styles.text}>
+                Dahulukan soal-soal yang kamu anggap mudah.
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.number}>4.</Text>
+              <Text style={styles.text}>
+                Bekerjalah secara jujur dan tidak bekerja sama dengan siapapun.
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.number}>5.</Text>
+              <Text style={styles.text}>
+                Kerjakan soal-soal berikut ini dengan baik dan benar!
+              </Text>
+            </View>
+            <View style={styles.buttonTipe}>
+              <View style={styles.boxButton}>
                 <TouchableOpacity
-                  style={styles.button}
-                  onPress={handleNavigationUjian}
+                  style={[
+                    styles.btnYes,
+                    selectedOption === 'jawabLangsung' && styles.selectedBtn,
+                  ]}
+                  onPress={() => handleSelection('jawabLangsung')}
                 >
-                  <Text style={styles.buttonText}>Selanjutnya</Text>
+                  <Text
+                    style={[
+                      styles.fontBtn,
+                      selectedOption === 'jawabLangsung' && styles.selectedFont,
+                    ]}
+                  >
+                    Jawab Langsung
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.btnNo,
+                    selectedOption === 'uploadLembar' && styles.selectedBtn,
+                  ]}
+                  onPress={() => handleSelection('uploadLembar')}
+                >
+                  <Text
+                    style={[
+                      styles.fontBtn,
+                      selectedOption === 'uploadLembar' && styles.selectedFont,
+                    ]}
+                  >
+                    Upload Lembar Jawaban
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
-          </ScrollView>
-        </>
-      ) : (
-        <>
-          {statusUjian === false ? (
-            <View style={styles.petunjukUjian}>
-              <View style={styles.styleTitle}>
-                <Text style={styles.fontTitle}>Petunjuk Ujian Evaluasi</Text>
+            {selectedOption && (
+              <View style={styles.buttonMulai}>
+                <TouchableOpacity style={styles.button1} onPress={handleUjian}>
+                  <Text style={styles.buttonText}>Mulai</Text>
+                </TouchableOpacity>
               </View>
-              <View style={styles.row}>
-                <Text style={styles.number}>1.</Text>
-                <Text style={styles.text}>
-                  Berdoalah terlebih dahulu sebelum mengerjakan soal.
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.number}>2.</Text>
-                <Text style={styles.text}>
-                  Periksa dan bacalah soal-soal dengan teliti sebelum menjawab.
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.number}>3.</Text>
-                <Text style={styles.text}>
-                  Dahulukan soal-soal yang kamu anggap mudah.
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.number}>4.</Text>
-                <Text style={styles.text}>
-                  Bekerjalah secara jujur dan tidak bekerja sama dengan
-                  siapapun.
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.number}>5.</Text>
-                <Text style={styles.text}>
-                  Kerjakan soal-soal berikut ini dengan baik dan benar!
-                </Text>
-              </View>
-              <View style={styles.buttonTipe}>
-                <View style={styles.boxButton}>
-                  <TouchableOpacity
-                    style={[
-                      styles.btnYes,
-                      selectedOption === 'jawabLangsung' && styles.selectedBtn,
-                    ]}
-                    onPress={() => handleSelection('jawabLangsung')}
-                  >
-                    <Text
-                      style={[
-                        styles.fontBtn,
-                        selectedOption === 'jawabLangsung' &&
-                          styles.selectedFont,
-                      ]}
-                    >
-                      Jawab Langsung
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.btnNo,
-                      selectedOption === 'uploadLembar' && styles.selectedBtn,
-                    ]}
-                    onPress={() => handleSelection('uploadLembar')}
-                  >
-                    <Text
-                      style={[
-                        styles.fontBtn,
-                        selectedOption === 'uploadLembar' &&
-                          styles.selectedFont,
-                      ]}
-                    >
-                      Upload Lembar Jawaban
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              {selectedOption && (
-                <View style={styles.buttonMulai}>
-                  <TouchableOpacity
-                    style={styles.button1}
-                    onPress={handleUjian}
-                  >
-                    <Text style={styles.buttonText}>Mulai</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+            )}
+          </View>
+        ) : (
+          <>
+            <View
+              style={[styles.styleTitle, { marginBottom: 10, marginTop: 10 }]}
+            >
+              <Text style={styles.fontTitle}>Ujian Evaluasi</Text>
             </View>
-          ) : (
-            <>
+            <ScrollView
+              style={styles.contentUjian}
+              contentContainerStyle={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              showsVerticalScrollIndicator={false}
+            >
+              {dataSoal.map((item, index) => (
+                <View key={index} style={styles.boxSoal}>
+                  {/* Soal */}
+                  <View style={styles.contentSoal}>
+                    <Text style={styles.fontSoal}>{item.soal}</Text>
+                  </View>
+                  {selectedOption === 'jawabLangsung' && (
+                    <>
+                      {/* Inputan Diketahui */}
+                      <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Diketahui:</Text>
+                        <TextInput
+                          style={styles.inputMultiline}
+                          placeholder="Masukkan data yang diketahui"
+                          multiline
+                          numberOfLines={4}
+                          textAlignVertical="top"
+                        />
+                      </View>
+
+                      {/* Inputan Ditanya */}
+                      <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Ditanya:</Text>
+                        <TextInput
+                          style={styles.inputMultiline}
+                          placeholder="Masukkan pertanyaan"
+                          multiline
+                          numberOfLines={4}
+                          textAlignVertical="top"
+                        />
+                      </View>
+
+                      {/* Inputan Dijawab */}
+                      <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Dijawab:</Text>
+                        <TextInput
+                          style={styles.inputMultiline}
+                          placeholder="Masukkan jawaban"
+                          multiline
+                          numberOfLines={6} // Lebih panjang karena biasanya jawaban lebih detail
+                          textAlignVertical="top"
+                        />
+                      </View>
+                    </>
+                  )}
+                </View>
+              ))}
               <View
-                style={[styles.styleTitle, { marginBottom: 10, marginTop: 10 }]}
-              >
-                <Text style={styles.fontTitle}>Ujian Evaluasi</Text>
-              </View>
-              <ScrollView
-                style={styles.contentUjian}
-                contentContainerStyle={{
+                style={{
+                  width: '95%',
+                  height: 50,
+                  marginBottom: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
-                showsVerticalScrollIndicator={false}
               >
-                {dataSoal.map((item, index) => (
-                  <View key={index} style={styles.boxSoal}>
-                    {/* Soal */}
-                    <View style={styles.contentSoal}>
-                      <Text style={styles.fontSoal}>{item.soal}</Text>
-                    </View>
-                    {selectedOption === 'jawabLangsung' && (
-                      <>
-                        {/* Inputan Diketahui */}
-                        <View style={styles.inputContainer}>
-                          <Text style={styles.label}>Diketahui:</Text>
-                          <TextInput
-                            style={styles.inputMultiline}
-                            placeholder="Masukkan data yang diketahui"
-                            multiline
-                            numberOfLines={4}
-                            textAlignVertical="top"
-                          />
-                        </View>
-
-                        {/* Inputan Ditanya */}
-                        <View style={styles.inputContainer}>
-                          <Text style={styles.label}>Ditanya:</Text>
-                          <TextInput
-                            style={styles.inputMultiline}
-                            placeholder="Masukkan pertanyaan"
-                            multiline
-                            numberOfLines={4}
-                            textAlignVertical="top"
-                          />
-                        </View>
-
-                        {/* Inputan Dijawab */}
-                        <View style={styles.inputContainer}>
-                          <Text style={styles.label}>Dijawab:</Text>
-                          <TextInput
-                            style={styles.inputMultiline}
-                            placeholder="Masukkan jawaban"
-                            multiline
-                            numberOfLines={6} // Lebih panjang karena biasanya jawaban lebih detail
-                            textAlignVertical="top"
-                          />
-                        </View>
-                      </>
-                    )}
-                  </View>
-                ))}
-                <View
-                  style={{
-                    width: '95%',
-                    height: 50,
-                    marginBottom: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  {selectedOption === 'jawabLangsung' ? (
-                    <TouchableOpacity style={styles.btnKirim}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontFamily: 'lexend',
-                          fontSize: height * 0.02,
-                        }}
-                      >
-                        {' '}
-                        Kirim Jawban
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity style={styles.btnKirim}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontFamily: 'lexend',
-                          fontSize: height * 0.02,
-                        }}
-                      >
-                        {' '}
-                        Upload Lembar Jawban
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </ScrollView>
-            </>
-          )}
-        </>
-      )}
+                {selectedOption === 'jawabLangsung' ? (
+                  <TouchableOpacity style={styles.btnKirim}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontFamily: 'lexend',
+                        fontSize: height * 0.02,
+                      }}
+                    >
+                      {' '}
+                      Kirim Jawban
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={styles.btnKirim}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontFamily: 'lexend',
+                        fontSize: height * 0.02,
+                      }}
+                    >
+                      {' '}
+                      Upload Lembar Jawban
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </ScrollView>
+          </>
+        )}
+      </>
     </SafeAreaView>
   );
 };

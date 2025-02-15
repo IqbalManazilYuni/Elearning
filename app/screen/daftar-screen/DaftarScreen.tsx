@@ -19,8 +19,9 @@ import Toast from 'react-native-toast-message';
 
 const { height, width } = Dimensions.get('window');
 
-export const LoginScreen: React.FC = () => {
+export const DaftarScreen: React.FC = () => {
   const [nomor, setNomor] = useState('');
+  const [nama, setNama] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -36,10 +37,11 @@ export const LoginScreen: React.FC = () => {
 
     try {
       const response = await fetch(
-        'https://vwq2vz1x-5000.asse.devtunnels.ms/api/akuns/login',
+        'https://vwq2vz1x-5000.asse.devtunnels.ms/api/akuns',
         {
           method: 'POST',
           body: JSON.stringify({
+            nama: nama,
             nomor: nomor,
             password: password,
           }), // Kirim data sebagai JSON
@@ -55,15 +57,15 @@ export const LoginScreen: React.FC = () => {
         // Jika berhasil, navigasi ke halaman Home
         Toast.show({
           type: 'success',
-          text1: 'Login Berhasil',
-          text2: 'Selamat datang',
+          text1: 'Pendaftaran Berhasil',
+          text2: 'Silahkan Login',
         });
-        navigation.navigate('Home');
+        navigation.navigate('Login');
       } else {
         // Jika gagal, tampilkan pesan error
         Toast.show({
           type: 'error',
-          text1: 'Gagal Login',
+          text1: 'Gagal Mendaftar',
           text2: payload.message || 'Coba lagi nanti',
         });
       }
@@ -147,6 +149,17 @@ export const LoginScreen: React.FC = () => {
                 placeholderTextColor={'black'}
                 value={nomor}
                 onChangeText={setNomor}
+                keyboardType="number-pad"
+              />
+              <Text style={[styles.label, { marginTop: height * 0.016 }]}>
+                Nama Pengguna
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Masukkan Nama Pengguna"
+                placeholderTextColor={'black'}
+                value={nama}
+                onChangeText={setNama}
               />
               <Text style={[styles.label, { marginTop: height * 0.016 }]}>
                 Password Pengguna
@@ -250,5 +263,11 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     flexDirection: 'column',
+  },
+  loader: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

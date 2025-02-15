@@ -1,6 +1,7 @@
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './navigator/AppNavigator';
+import Toast from 'react-native-toast-message';
 
 const { width } = Dimensions.get('window');
 
@@ -16,6 +17,7 @@ const App = () => {
       <View style={styles.container}>
         <AppNavigator />
       </View>
+      <Toast />
     </NavigationContainer>
   );
 };

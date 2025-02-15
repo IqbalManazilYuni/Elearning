@@ -10,11 +10,13 @@ import { SplashScreen } from '../screen/splash-screen/SplashScreen';
 import { EvaluasiScreen } from '../screen/evaluasi-screen/EvaluasiScreen';
 import { LembarScreen } from '../screen/lembar-ref-screen/LembarScreen';
 import { PembelajaranScreen } from '../screen/pembelajaraan-screen/PembelajaranScreen';
+import { DaftarScreen } from '../screen/daftar-screen/DaftarScreen';
 
 export type RootStackParamList = {
   Splash: undefined;
   Welcome: undefined;
   Login: undefined;
+  Daftar: undefined;
   Home: undefined;
   Preview: {
     state: {
@@ -59,6 +61,7 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name="Splash2" component={SplashScreen2} />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Daftar" component={DaftarScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Preview" component={PreviewScreen} />
       <Stack.Screen name="Materi" component={MateriScreen} />

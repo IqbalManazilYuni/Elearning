@@ -65,12 +65,12 @@ export const WelcomeScreen: React.FC = () => {
       return () => backHandler.remove(); // Clean up event listener when screen is unfocused
     }, [])
   );
-  const handleNavigationGuru = () => {
-    navigation.navigate('Login');
+  const handleNavigationDaftar = () => {
+    navigation.navigate('Daftar');
   };
 
-  const handleNavigationSiswa = () =>{
-    navigation.navigate('Home')
+  const handleNavigationMasuk = () =>{
+    navigation.navigate('Login')
   }
 
   return (
@@ -147,7 +147,7 @@ export const WelcomeScreen: React.FC = () => {
           <View style={styles.row1}>
             <TouchableOpacity
               style={styles.button1}
-              onPress={() => handleNavigationGuru()}
+              onPress={() => handleNavigationDaftar()}
             >
               <Text
                 style={{
@@ -157,13 +157,12 @@ export const WelcomeScreen: React.FC = () => {
                   fontWeight: 'bold',
                 }}
               >
-                Guru
+                Daftar
               </Text>
-              <CaretRight />
             </TouchableOpacity>
           </View>
           <View style={styles.row2}>
-            <TouchableOpacity style={styles.button2} onPress={()=>handleNavigationSiswa()}>
+            <TouchableOpacity style={styles.button2} onPress={()=>handleNavigationMasuk()}>
               <Text
                 style={{
                   fontFamily: 'lexend',
@@ -172,9 +171,8 @@ export const WelcomeScreen: React.FC = () => {
                   fontWeight: 'bold',
                 }}
               >
-                Siswa
+                Masuk
               </Text>
-              <CaretRight />
             </TouchableOpacity>
           </View>
         </View>

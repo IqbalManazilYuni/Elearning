@@ -1,4 +1,6 @@
 import {
+  Alert,
+  BackHandler,
   Dimensions,
   ScrollView,
   StatusBar,
@@ -24,6 +26,7 @@ import {
 } from '../../assets/images';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/AppNavigator';
+import { useEffect } from 'react';
 
 const { height } = Dimensions.get('window');
 
@@ -87,6 +90,36 @@ const items = [
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handleBackButton = () => {
+    Alert.alert(
+      'Keluar Aplikasi',
+      'Apakah Anda yakin ingin keluar dari aplikasi?',
+      [
+        {
+          text: 'Batal',
+          onPress: () => null, // Tidak melakukan apa-apa
+          style: 'cancel',
+        },
+        {
+          text: 'Keluar',
+          onPress: () => BackHandler.exitApp(), // Keluar dari aplikasi
+        },
+      ],
+      { cancelable: false }
+    );
+    return true; // Mencegah default behavior (keluar tanpa konfirmasi)
+  };
+
+  // Tambahkan event listener untuk tombol back
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+
+    return () => backHandler.remove(); // Hapus event listener saat komponen di-unmount
+  }, []);
 
   const handlePreviewNavigasi = (
     item: string,
