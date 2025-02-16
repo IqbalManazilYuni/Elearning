@@ -24,6 +24,9 @@ import PDFReader from 'react-native-pdf';
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
 import Video from 'react-native-video';
+import SoalItem from '../../components/Soal/SoalItem';
+import DocumentPicker from 'react-native-document-picker';
+import Toast from 'react-native-toast-message';
 
 type PembelajaranScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -107,6 +110,47 @@ const dataPembelajaran = [
     url: 'soal.pdf',
     jenis: 'Materi 1',
   },
+  {
+    id: 7,
+    kategori: 'Soal',
+    soal: {
+      deskripsi1:
+        'Berdasarkan hasil diskusi, buatlah pemahaman Ananda mengenai:',
+      pertanyaan1: [
+        {
+          id: 1,
+          pertanyaan: 'Teori asam basa Arrhenius',
+        },
+        {
+          id: 2,
+          pertanyaan: 'Teori asam basa Bronsted-Lowry',
+        },
+        {
+          id: 3,
+          pertanyaan: 'Pasangan asam basa konjugasi',
+        },
+        {
+          id: 4,
+          pertanyaan: 'Teori asam basa Lewis',
+        },
+      ],
+    },
+    jenis: 'Materi 1',
+  },
+  {
+    id: 8,
+    kategori: 'Soal',
+    soal: {
+      deskripsi1: 'Buatlah Kesimpulan dari materi yang sudah dipelajari!',
+      pertanyaan1: [
+        {
+          id: 1,
+          pertanyaan: 'Kesimpulan',
+        },
+      ],
+    },
+    jenis: 'Materi 1',
+  },
 ];
 
 export const PembelajaranScreen: React.FC = () => {
@@ -118,42 +162,163 @@ export const PembelajaranScreen: React.FC = () => {
   const [filePath, setFilePath] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0); // State untuk menyimpan indeks data yang sedang ditampilkan
-
-  const [soalDanJawaban, setSoalDanJawaban] = useState<
-    { type: 'deskripsi' | 'pertanyaan'; content: string; jawaban?: string }[]
-  >([]);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [soalDanJawaban, setSoalDanJawaban] = useState<{
+    [key: number]: {
+      type: 'deskripsi' | 'pertanyaan' | 'file';
+      content: string;
+      jawaban?: string;
+      uri?: string;
+      name?: string;
+      fileType?: string;
+    }[];
+  }>({
+    3: [], // Soal untuk id 3
+    6: [], // File untuk id 6
+    7: [], // Soal untuk id 7
+    8: [], // Soal untuk id 8
+  });
 
   useEffect(() => {
-    if (dataPembelajaran[currentIndex].kategori === 'Soal') {
-      const soalData = dataPembelajaran[currentIndex].soal;
+    const currentItem = dataPembelajaran[currentIndex];
+    if (currentItem.kategori === 'Soal') {
+      const soalData = currentItem.soal;
       const initialSoalDanJawaban = [
         { type: 'deskripsi', content: soalData?.deskripsi1 },
-        ...soalData.pertanyaan1.map((soal) => ({
+        ...(soalData?.pertanyaan1?.map((soal) => ({
           type: 'pertanyaan',
           content: soal.pertanyaan,
           jawaban: '',
-        })),
+        })) || []),
         { type: 'deskripsi', content: soalData?.deskripsi2 },
-        ...soalData.pertanyaan2.map((soal) => ({
+        ...(soalData?.pertanyaan2?.map((soal) => ({
           type: 'pertanyaan',
           content: soal.pertanyaan,
           jawaban: '',
-        })),
-      ];
-      setSoalDanJawaban(initialSoalDanJawaban);
+        })) || []),
+      ].filter((item) => item.content); // Hapus item dengan konten undefined
+
+      setSoalDanJawaban((prev) => ({
+        ...prev,
+        [currentItem.id]: initialSoalDanJawaban,
+      }));
     }
   }, [currentIndex]);
 
-  const handleJawabanChange = (text: string, index: number) => {
-    const newSoalDanJawaban = [...soalDanJawaban];
-    if (newSoalDanJawaban[index].type === 'pertanyaan') {
-      newSoalDanJawaban[index].jawaban = text;
-    }
-    setSoalDanJawaban(newSoalDanJawaban);
+  const handleJawabanChange = (text: string, index: number, id: number) => {
+    setSoalDanJawaban((prev) => {
+      const newSoalDanJawaban = [...prev[id]];
+      if (newSoalDanJawaban[index].type === 'pertanyaan') {
+        newSoalDanJawaban[index].jawaban = text;
+      }
+      return { ...prev, [id]: newSoalDanJawaban };
+    });
   };
 
-  const handleSimpanJawaban = () => {
-    console.log(soalDanJawaban);
+  const handleSimpanJawaban = (id: number) => {
+    const jawaban = soalDanJawaban[id].map((item) => ({
+      content: item.content,
+      type: item.type,
+      jawaban: item.jawaban || '', // Jika jawaban kosong, berikan string kosong
+    }));
+
+    console.log({
+      id,
+      Jawaban: jawaban,
+    });
+  };
+
+  // const mergeSoalDanJawaban = (
+  //   nama: string,
+  //   nomor: string,
+  //   soal1: any,
+  //   soal2: any,
+  //   soal3: any
+  // ) => {
+  //   return {
+  //     nama,
+  //     nomor,
+  //     Latihan1: soal1,
+  //     Latihan2: soal3,
+  //     Latihan3: soal2,
+  //   };
+  // };
+  // const combinedData = mergeSoalDanJawaban(
+  //   'Nama Siswa',
+  //   '12345',
+  //   soalDanJawaban,
+  //   soalDanJawaban7,
+  //   soalDanJawaban8
+  // );
+
+  const handleFinish = () => {
+    const data = {
+      nama: 'Nama Siswa', // Ganti dengan nilai yang sesuai
+      nomor: '12345', // Ganti dengan nilai yang sesuai
+      soal: Object.keys(soalDanJawaban).map((id) => ({
+        id: parseInt(id),
+        Jawaban: soalDanJawaban[parseInt(id)].map((item) => ({
+          content: item.content,
+          type: item.type,
+          jawaban: item.jawaban || '', // Jika jawaban kosong, berikan string kosong
+          ...(item.type === 'file' && {
+            uri: item.uri,
+            name: item.name,
+            type: item.fileType,
+          }),
+        })),
+      })),
+    };
+
+    console.log(JSON.stringify(data));
+  };
+
+  const pickDocument = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.pdf], // Hanya izinkan file PDF
+      });
+
+      const selectedFile = {
+        uri: res[0].uri,
+        name: res[0].name || 'file.pdf',
+        type: res[0].type || 'application/pdf',
+      };
+
+      setSoalDanJawaban((prev) => ({
+        ...prev,
+        6: [
+          {
+            type: 'file',
+            content: 'Uploaded PDF',
+            uri: selectedFile.uri,
+            name: selectedFile.name,
+            fileType: selectedFile.type,
+          },
+        ],
+      }));
+      Toast.show({
+        type: 'success',
+        text1: 'File Dipilih',
+        text2: 'File berhasil dipilih, siap untuk diupload.',
+      });
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User cancelled file picker');
+        Toast.show({
+          type: 'info',
+          text1: 'Dibatalkan',
+          text2: 'Pemilihan file dibatalkan',
+        });
+      } else {
+        console.error('Error:', err);
+        Toast.show({
+          type: 'error',
+          text1: 'Terjadi Kesalahan',
+          text2: 'Gagal memilih file',
+        });
+      }
+    }
   };
 
   const downloadFromFirebase = async (
@@ -302,38 +467,6 @@ export const PembelajaranScreen: React.FC = () => {
                   ) : (
                     <Text>No PDF file found</Text>
                   )}
-                  {dataPembelajaran[currentIndex].id === 6 && (
-                    <View
-                      style={{
-                        width: '100%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        paddingVertical: height * 0.02,
-                      }}
-                    >
-                      <TouchableOpacity
-                        style={{
-                          height: 60,
-                          width: '60%',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: '#3DB2FF',
-                          borderRadius: 16,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontFamily: 'lexend',
-                            fontWeight: 'bold',
-                            fontSize: 18,
-                          }}
-                        >
-                          Upload Jawaban
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
                 </>
               </View>
             )}
@@ -373,44 +506,27 @@ export const PembelajaranScreen: React.FC = () => {
             )}
           </>
         )}
-        {dataPembelajaran[currentIndex].id === 3 && (
+        {dataPembelajaran[currentIndex].kategori === 'Soal' && (
           <ScrollView
             style={styles.boxSoal}
             showsVerticalScrollIndicator={false}
           >
-            {soalDanJawaban.map((item, index) => (
-              <View key={index}>
-                {item.type === 'deskripsi' ? (
-                  <Text style={styles.fontDeskripsi}>{item.content}</Text>
-                ) : (
-                  <>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        width: '100%',
-                        paddingLeft: 10,
-                      }}
-                    >
-                      <View style={{ width: '100%', paddingLeft: 10 }}>
-                        <Text style={styles.fontDeskripsi}>{item.content}</Text>
-                      </View>
-                    </View>
-                    <View style={{ width: '100%', alignItems: 'center' }}>
-                      <TextInput
-                        style={styles.inputMultiline}
-                        placeholder="Masukkan Jawaban"
-                        multiline
-                        numberOfLines={4}
-                        textAlignVertical="top"
-                        onChangeText={(text) =>
-                          handleJawabanChange(text, index)
-                        }
-                      />
-                    </View>
-                  </>
-                )}
-              </View>
-            ))}
+            {soalDanJawaban[dataPembelajaran[currentIndex].id]?.map(
+              (item, index) => (
+                <SoalItem
+                  key={index}
+                  item={item}
+                  index={index}
+                  onChangeText={(text: any) =>
+                    handleJawabanChange(
+                      text,
+                      index,
+                      dataPembelajaran[currentIndex].id
+                    )
+                  }
+                />
+              )
+            )}
 
             {/* Tombol Simpan */}
             <View
@@ -425,7 +541,9 @@ export const PembelajaranScreen: React.FC = () => {
                   backgroundColor: '#3DB2FF',
                   borderRadius: 16,
                 }}
-                onPress={() => handleSimpanJawaban()}
+                onPress={() =>
+                  handleSimpanJawaban(dataPembelajaran[currentIndex].id)
+                }
               >
                 <Text
                   style={{
@@ -441,61 +559,65 @@ export const PembelajaranScreen: React.FC = () => {
             </View>
           </ScrollView>
         )}
+        {dataPembelajaran[currentIndex].id === 6 && (
+          <View
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: height * 0.02,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                height: 60,
+                width: '60%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#3DB2FF',
+                borderRadius: 16,
+                marginBottom: 10,
+              }}
+              onPress={pickDocument}
+            >
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'lexend',
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                }}
+              >
+                Pilih Dokumen
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <View
         style={{
           height: 80,
           width: '100%',
-          flexDirection: 'row', // Mengatur tata letak tombol secara horizontal
-          justifyContent: 'space-between', // Memberi jarak antara tombol
+          flexDirection: 'row',
+          justifyContent: currentIndex === 0 ? 'flex-end' : 'space-between',
           alignItems: 'center',
-          paddingHorizontal: 20, // Memberi padding horizontal
+          paddingHorizontal: 20,
         }}
       >
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#3DB2FF',
-            width: '45%', // Lebar tombol
-            height: '80%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 16,
-          }}
-          onPress={handlePrev} // Tambahkan fungsi handlePrev di sini
-        >
-          <Text
-            style={{
-              color: 'white',
-              fontFamily: 'lexend',
-              fontWeight: 'bold',
-              fontSize: 18,
-            }}
-          >
-            Previous
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#3DB2FF',
-            width: '45%', // Lebar tombol
-            height: '80%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 16,
-          }}
-          onPress={handleNext} // Tambahkan fungsi handleNext di sini
-        >
-          <Text
-            style={{
-              color: 'white',
-              fontFamily: 'lexend',
-              fontWeight: 'bold',
-              fontSize: 18,
-            }}
-          >
-            Next
-          </Text>
-        </TouchableOpacity>
+        {currentIndex > 0 && (
+          <TouchableOpacity style={styles.navButton} onPress={handlePrev}>
+            <Text style={styles.navButtonText}>Previous</Text>
+          </TouchableOpacity>
+        )}
+        {currentIndex < dataPembelajaran.length - 1 ? (
+          <TouchableOpacity style={styles.navButton} onPress={handleNext}>
+            <Text style={styles.navButtonText}>Next</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.navButton} onPress={handleFinish}>
+            <Text style={styles.navButtonText}>Selesai</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -545,5 +667,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     textAlignVertical: 'top',
     marginBottom: 10,
+  },
+  navButton: {
+    backgroundColor: '#3DB2FF',
+    width: '45%',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+  },
+  navButtonText: {
+    color: 'white',
+    fontFamily: 'lexend',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });

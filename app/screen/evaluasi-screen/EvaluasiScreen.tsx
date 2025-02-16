@@ -566,21 +566,24 @@ export const EvaluasiScreen: React.FC = () => {
                             </Text>
                           </TouchableOpacity>
                         ) : (
-                          <TouchableOpacity
-                            style={styles.btnKirim}
-                            onPress={uploadFile}
-                          >
-                            <Text
-                              style={{
-                                color: 'white',
-                                fontFamily: 'lexend',
-                                fontSize: height * 0.02,
-                              }}
+                          <>
+                            <Text>{selectedFile.name}</Text>
+                            <TouchableOpacity
+                              style={styles.btnKirim}
+                              onPress={uploadFile}
                             >
-                              {' '}
-                              Upload File
-                            </Text>
-                          </TouchableOpacity>
+                              <Text
+                                style={{
+                                  color: 'white',
+                                  fontFamily: 'lexend',
+                                  fontSize: height * 0.02,
+                                }}
+                              >
+                                {' '}
+                                Upload File
+                              </Text>
+                            </TouchableOpacity>
+                          </>
                         )}
                       </>
                     )}

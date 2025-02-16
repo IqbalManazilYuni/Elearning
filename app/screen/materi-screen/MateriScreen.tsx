@@ -74,7 +74,7 @@ export const MateriScreen: React.FC = () => {
             <IconMateri2 />
           </View>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle}>
           <View
             style={{
               justifyContent: 'center',
@@ -87,7 +87,7 @@ export const MateriScreen: React.FC = () => {
           <View style={{ justifyContent: 'center', alignItems: 'flex-start' }}>
             <IconLatihan />
           </View>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonStyle}
           onPress={() => handleNavigasiLembarRefleksi(item)}
