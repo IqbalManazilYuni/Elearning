@@ -16,6 +16,7 @@ import { LogoWelcome } from '../../assets/images';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/AppNavigator';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height, width } = Dimensions.get('window');
 
@@ -53,11 +54,16 @@ export const LoginScreen: React.FC = () => {
 
       if (response.ok) {
         // Jika berhasil, navigasi ke halaman Home
+        await AsyncStorage.setItem('nama', payload.data.nama); // Simpan nama
+        await AsyncStorage.setItem('nomor', payload.data.nomor); // Simpan nomor
+        await AsyncStorage.setItem('role', payload.data.role); // Simpan nomor
         Toast.show({
           type: 'success',
           text1: 'Login Berhasil',
           text2: 'Selamat datang',
         });
+        console.log(payload.data.nama);
+
         navigation.navigate('Home');
       } else {
         // Jika gagal, tampilkan pesan error
@@ -178,7 +184,7 @@ export const LoginScreen: React.FC = () => {
                     style={styles.button}
                     onPress={handleNavigationHome}
                   >
-                    <Text style={styles.buttonText}>Daftar</Text>
+                    <Text style={styles.buttonText}>Masuk</Text>
                   </TouchableOpacity>
                 )}
               </View>

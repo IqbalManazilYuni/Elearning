@@ -24,9 +24,11 @@ import {
   IconDaftarPustaka,
   IconPetaKonsep,
 } from '../../assets/images';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation, useFocusEffect  } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/AppNavigator';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 const { height } = Dimensions.get('window');
 
@@ -90,7 +92,9 @@ const items = [
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
+  const [nama, setNama] = useState('');
+  const [role, setRole] = useState('');
+  const [nomor, setNomor] = useState('');
   const handleBackButton = () => {
     Alert.alert(
       'Keluar Aplikasi',
@@ -111,15 +115,42 @@ export const HomeScreen: React.FC = () => {
     return true; // Mencegah default behavior (keluar tanpa konfirmasi)
   };
 
-  // Tambahkan event listener untuk tombol back
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackButton
-    );
-
-    return () => backHandler.remove(); // Hapus event listener saat komponen di-unmount
+    const getDataFromAsyncStorage = async () => {
+      try {
+        const nama = await AsyncStorage.getItem('nama');
+        const nomor = await AsyncStorage.getItem('nomor');
+        const role = await AsyncStorage.getItem('role');
+        if (nama !== null && nomor !== null && role !== null) {
+          setNomor(nomor);
+          setNama(nama);
+          setRole(role);
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Warning',
+            text2: 'Sesi Login Habis',
+          });
+          navigation.navigate('Login');
+        }
+      } catch (error) {
+        console.error('Gagal mengambil data:', error);
+      }
+    };
+    getDataFromAsyncStorage();
   }, []);
+
+  // Tambahkan event listener untuk tombol back
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        handleBackButton
+      );
+  
+      return () => backHandler.remove(); // Hapus listener saat keluar dari layar
+    }, [])
+  );
 
   const handlePreviewNavigasi = (
     item: string,
@@ -178,7 +209,7 @@ export const HomeScreen: React.FC = () => {
               fontSize: height * 0.028,
             }}
           >
-            Hi, Welcome Back
+            {`Hi ${nama}, Welcome Back`}
           </Text>
           <Text
             style={{
@@ -229,7 +260,12 @@ export const HomeScreen: React.FC = () => {
                 key={index}
                 style={styles.box}
                 onPress={() =>
-                  handlePreviewNavigasi(item.title, item.pdf, item.code, item.eval)
+                  handlePreviewNavigasi(
+                    item.title,
+                    item.pdf,
+                    item.code,
+                    item.eval
+                  )
                 }
               >
                 {item.icon}

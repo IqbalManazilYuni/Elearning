@@ -46,14 +46,22 @@ export const WelcomeScreen: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       const backAction = () => {
-        Alert.alert('Hold on!', 'Are you sure you want to exit the app?', [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          { text: 'YES', onPress: () => BackHandler.exitApp() },
-        ]);
+        Alert.alert(
+          'Keluar Aplikasi',
+          'Apakah Anda yakin ingin keluar dari aplikasi?',
+          [
+            {
+              text: 'Batal',
+              onPress: () => null, // Tidak melakukan apa-apa
+              style: 'cancel',
+            },
+            {
+              text: 'Keluar',
+              onPress: () => BackHandler.exitApp(), // Keluar dari aplikasi
+            },
+          ],
+          { cancelable: false }
+        );
         return true;
       };
 
@@ -69,9 +77,9 @@ export const WelcomeScreen: React.FC = () => {
     navigation.navigate('Daftar');
   };
 
-  const handleNavigationMasuk = () =>{
-    navigation.navigate('Login')
-  }
+  const handleNavigationMasuk = () => {
+    navigation.navigate('Login');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -162,7 +170,10 @@ export const WelcomeScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.row2}>
-            <TouchableOpacity style={styles.button2} onPress={()=>handleNavigationMasuk()}>
+            <TouchableOpacity
+              style={styles.button2}
+              onPress={() => handleNavigationMasuk()}
+            >
               <Text
                 style={{
                   fontFamily: 'lexend',
