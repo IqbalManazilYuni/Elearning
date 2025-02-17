@@ -74,6 +74,48 @@ export const EvaluasiScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<any>(null);
+  useEffect(() => {
+    const cekJawaban = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `https://backend-mauve-chi-35.vercel.app/api/evaluasi/getNomor`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              nomor: nomor,
+            }),
+          }
+        );
+
+        const data = await response.json(); // Ambil response sebagai teks
+
+        if (response.ok) {
+          if (data.nomor !== '') {
+            Toast.show({
+              type: 'info',
+              text1: 'Informasi',
+              text2: 'Anda Sudah Mengejerkan Evaluasi',
+            });
+            navigation.navigate('Home');
+          }
+        } else {
+          console.log('Data tidak ditemukan:', data);
+        }
+      } catch (error) {
+        console.error('Error mengambil data response:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (nomor !== '') {
+      cekJawaban();
+    }
+  }, [nomor]);
   const [jawaban, setJawaban] = useState<
     {
       id: number;
@@ -206,7 +248,7 @@ export const EvaluasiScreen: React.FC = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        'https://vwq2vz1x-5000.asse.devtunnels.ms/api/evaluasi',
+        'https://backend-mauve-chi-35.vercel.app/api/evaluasi',
         {
           method: 'POST',
           headers: {
@@ -300,7 +342,7 @@ export const EvaluasiScreen: React.FC = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        'https://vwq2vz1x-5000.asse.devtunnels.ms/api/evaluasi/file',
+        'https://backend-mauve-chi-35.vercel.app/api/evaluasi/file',
         {
           method: 'POST',
           headers: {

@@ -37,7 +37,7 @@ export const LoginScreen: React.FC = () => {
 
     try {
       const response = await fetch(
-        'https://vwq2vz1x-5000.asse.devtunnels.ms/api/akuns/login',
+        'https://backend-mauve-chi-35.vercel.app/api/akuns/login',
         {
           method: 'POST',
           body: JSON.stringify({

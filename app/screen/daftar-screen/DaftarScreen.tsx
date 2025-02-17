@@ -37,7 +37,7 @@ export const DaftarScreen: React.FC = () => {
 
     try {
       const response = await fetch(
-        'https://vwq2vz1x-5000.asse.devtunnels.ms/api/akuns',
+        'https://backend-mauve-chi-35.vercel.app/api/akuns',
         {
           method: 'POST',
           body: JSON.stringify({
